@@ -1,18 +1,100 @@
-# my-first-project
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dự án đầu tiên</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chúc mừng sinh nhật — Sao lấp lánh & chữ bay bổng</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+    body,html{margin:0;padding:0;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Inter,Arial,sans-serif}
+    canvas#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+
+    .falling-text{
+      position:fixed;
+      z-index:2;
+      font-size:24px;
+      font-family:'Great Vibes', cursive;
+      font-weight:normal;
+      color:#ff3333;
+      white-space:nowrap;
+      text-shadow:0 0 8px #ff3333,0 0 16px #fff;
+      animation:floatFall linear forwards;
+    }
+
+    @keyframes floatFall{
+      0%{transform:translateY(-60px) translateX(0)}
+      50%{transform:translateY(50vh) translateX(-30px)}
+      100%{transform:translateY(110vh) translateX(30px)}
+    }
+  </style>
 </head>
 <body>
-  <h1>Xin chào GitHub & Netlify!</h1>
-  <p>Đây là trang web đầu tiên của mình 🚀</p>
+  <canvas id="stars"></canvas>
+  
+  <script>
+    const wishes = [
+      "Chúc mừng sinh nhật❤️",
+      "Ngày càng xinh đẹp! 🥳",
+      "I LOVE YOU! ❤️",
+      "Mãi mãi ở bên nhau! 🥳",
+      "❤️22-08-1999❤️! ✨",
+      "Thêm tuổi, thêm niềm vui, thêm thành công! 😊",
+      "Chúc em luôn an yên và yêu đời! 🎉",
+      "Chúc mừng sinh nhật❤️",
+      "Happy Birthday em yêu ❤️",
+      "Happy Birthday em yêu ❤️"
+    ];
 
-  <button onclick="sayHello()">Bấm vào đây</button>
+    function createFallingText(){
+      const text=document.createElement('div');
+      text.className='falling-text';
+      text.style.left=Math.random()*95+'vw';
+      text.style.top=(Math.random()*-100)+'px';
+      text.style.fontSize=(24+Math.random()*10)+'px';
+      text.style.animationDuration=(3+Math.random()*3)+'s';
+      text.textContent=wishes[Math.floor(Math.random()*wishes.length)];
+      document.body.appendChild(text);
 
-  <script src="script.js"></script>
+      setTimeout(()=>text.remove(),6000);
+    }
+
+    setInterval(createFallingText,300);
+
+    const canvas=document.getElementById('stars');
+    const ctx=canvas.getContext('2d');
+    let W=canvas.width=innerWidth;
+    let H=canvas.height=innerHeight;
+
+    window.addEventListener('resize',()=>{
+      W=canvas.width=innerWidth;
+      H=canvas.height=innerHeight;
+      initStars();
+    });
+
+    const stars=[];
+    function rand(min,max){return Math.random()*(max-min)+min}
+    function initStars(){
+      stars.length=0;
+      for(let i=0;i<100;i++){
+        stars.push({x:Math.random()*W,y:Math.random()*H,r:rand(0.5,1.5),d:rand(0.2,1)});
+      }
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      for(const s of stars){
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle='white';
+        ctx.globalAlpha=s.d;
+        ctx.fill();
+      }
+      ctx.globalAlpha=1;
+      requestAnimationFrame(draw);
+    }
+    initStars();
+    draw();
+  </script>
 </body>
 </html>
